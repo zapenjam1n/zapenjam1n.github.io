@@ -65,7 +65,7 @@ form{padding:22px 26px 26px}
 .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
 label{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-bottom:7px;font-weight:500}
 label .opt{color:var(--muted);letter-spacing:.06em;text-transform:none;font-size:11px}
-input[type=text],input[type=date],select,textarea{
+input[type=text],input[type=date],input[type=url],input[type=password],select,textarea{
   width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:var(--radius);
   background:#FBFCFC;color:var(--ink);font:inherit;font-size:.95rem;
   transition:border-color .12s ease, box-shadow .12s ease, background .12s ease;
@@ -105,7 +105,10 @@ select{appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3
 .btn-primary:hover{background:var(--scrub-dk)}
 .btn-ghost{background:transparent;color:var(--muted);border-color:var(--line)}
 .btn-ghost:hover{color:var(--ink);border-color:#B9C4C1;background:var(--white)}
+.btn-danger{background:var(--red);color:var(--white)}
+.btn-danger:hover{background:#8E271D}
 .btn-sm{font-size:.82rem;padding:8px 14px}
+.btn[disabled]{opacity:.5;cursor:default}
 .actions{display:flex;gap:12px;align-items:center;margin-top:24px;flex-wrap:wrap}
 .saved{font-size:.85rem;color:var(--scrub);font-weight:600;opacity:0;transition:opacity .25s ease}
 .saved.show{opacity:1}
@@ -131,29 +134,84 @@ select{appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3
 
 /* ---------- log ---------- */
 .log{padding:44px 0 70px}
-.log-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.log-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:20px}
 .log-head h2{font-size:1.6rem;font-weight:700}
 .log-head .sub{color:var(--muted);font-size:.88rem;margin-top:6px}
-.log-tools{display:flex;gap:10px;flex-wrap:wrap}
-.table-scroll{overflow-x:auto;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
-table{border-collapse:collapse;width:100%;min-width:940px}
+.log-tools{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
+
+/* sync status */
+.sync{display:flex;align-items:center;gap:8px;font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);margin-top:10px}
+.dot{width:7px;height:7px;border-radius:50%;background:var(--muted);flex:none}
+.dot.on{background:var(--scrub)}
+.dot.warn{background:var(--amber)}
+.dot.off{background:#A9B6B3}
+.link{background:none;border:0;padding:0;font:inherit;color:var(--scrub);text-decoration:underline;cursor:pointer;letter-spacing:inherit}
+.link:hover{color:var(--scrub-dk)}
+
+/* connect panel */
+.connect{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);padding:22px 24px;margin-bottom:20px;box-shadow:var(--shadow)}
+.connect h3{font-size:1.05rem;font-weight:700;margin-bottom:6px}
+.connect p{margin:0 0 16px;color:var(--muted);font-size:.88rem;max-width:62ch}
+.connect .row{display:flex;gap:10px;flex-wrap:wrap;align-items:flex-start}
+.connect .row input{flex:1 1 340px}
+.connect .msg{font-size:.85rem;margin-top:12px;display:none}
+.connect .msg.show{display:block}
+.connect .msg.good{color:var(--scrub)}
+.connect .msg.bad{color:var(--red)}
+
+/* recent activity feed */
+.feed-wrap{margin-bottom:26px}
+.feed-title{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.18em;text-transform:uppercase;color:var(--muted);margin-bottom:12px}
+.feed{display:grid;grid-template-columns:repeat(auto-fit,minmax(212px,1fr));gap:12px}
+.fcard{background:var(--white);border:1px solid var(--line);border-left:3px solid var(--muted);border-radius:var(--radius);padding:14px 16px;box-shadow:var(--shadow)}
+.fcard.s-low{border-left-color:var(--muted)}
+.fcard.s-med{border-left-color:var(--scrub)}
+.fcard.s-high{border-left-color:var(--amber)}
+.fcard.s-crit{border-left-color:var(--red)}
+.fcard .top{display:flex;justify-content:space-between;align-items:baseline;gap:8px;margin-bottom:9px}
+.fcard .fid{font-family:"IBM Plex Mono",monospace;font-size:.74rem;color:var(--scrub);font-weight:500}
+.fcard .ago{font-family:"IBM Plex Mono",monospace;font-size:.68rem;color:#A9B6B3;white-space:nowrap;text-transform:uppercase;letter-spacing:.08em}
+.fcard .where{font-weight:600;font-size:.95rem;line-height:1.25;margin-bottom:3px;word-break:break-word}
+.fcard .by{font-size:.82rem;color:var(--muted);margin-bottom:10px;word-break:break-word}
+.fcard .foot{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.fcard .cat{font-size:.72rem;color:var(--muted);text-align:right;line-height:1.2}
+
+/* table */
+.table-scroll{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+table{border-collapse:collapse;width:100%;table-layout:fixed}
 th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:13px 14px;border-bottom:1px solid var(--line);background:#F7F9F8;white-space:nowrap}
-td{padding:14px;border-bottom:1px solid #EDF1F0;font-size:.9rem;vertical-align:top}
+td{padding:13px 14px;border-bottom:1px solid #EDF1F0;font-size:.88rem;vertical-align:top;word-break:break-word}
 tbody tr:last-child td{border-bottom:0}
 tbody tr:hover{background:#FAFCFB}
-td.id{font-family:"IBM Plex Mono",monospace;font-size:.82rem;color:var(--scrub);font-weight:500;white-space:nowrap}
-td.date{font-family:"IBM Plex Mono",monospace;font-size:.82rem;white-space:nowrap}
-td.issue{max-width:300px;min-width:200px}
-td.who{min-width:130px;word-break:break-word}
+col.c-id{width:14%}col.c-when{width:12%}col.c-by{width:13%}col.c-where{width:14%}
+col.c-cat{width:13%}col.c-urg{width:10%}col.c-routed{width:13%}col.c-act{width:5%}
+td.id{font-family:"IBM Plex Mono",monospace;font-size:.78rem;color:var(--scrub);font-weight:500}
+td.when{font-family:"IBM Plex Mono",monospace;font-size:.76rem;color:var(--muted)}
+td.when b{display:block;color:var(--ink);font-weight:500;font-size:.8rem;margin-bottom:2px}
+td.act{text-align:right}
 .spine{border-left:3px solid transparent}
 .s-low{border-left-color:var(--muted)}.s-med{border-left-color:var(--scrub)}.s-high{border-left-color:var(--amber)}.s-crit{border-left-color:var(--red)}
+.issue-row td{border-bottom:1px solid #EDF1F0;padding-top:0;font-size:.86rem;color:var(--muted)}
+.issue-row .issue-text{border-left:3px solid transparent;padding:0 0 4px 0;white-space:pre-wrap}
+.pending{font-family:"IBM Plex Mono",monospace;font-size:.62rem;letter-spacing:.1em;text-transform:uppercase;color:var(--amber);display:block;margin-top:3px}
 .row-new{animation:flash 1.6s ease}
 @keyframes flash{from{background:var(--scrub-wash)}to{background:transparent}}
-.del{background:none;border:0;color:#A9B6B3;cursor:pointer;font-size:1.05rem;line-height:1;padding:4px 6px;border-radius:2px}
+.del{background:none;border:0;color:#A9B6B3;cursor:pointer;font-size:1.05rem;line-height:1;padding:4px 7px;border-radius:2px}
 .del:hover{color:var(--red);background:#FBEEEC}
 .empty-state{padding:56px 26px;text-align:center;background:var(--white);border:1px dashed var(--line);border-radius:var(--radius)}
 .empty-state p{margin:0;color:var(--muted)}
 .empty-state strong{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:1.15rem;color:var(--ink);margin-bottom:6px}
+
+/* delete dialog */
+.overlay{position:fixed;inset:0;background:rgba(13,27,30,.55);display:none;align-items:center;justify-content:center;padding:20px;z-index:50}
+.overlay.show{display:flex}
+.modal{background:var(--white);border-radius:var(--radius);max-width:400px;width:100%;padding:26px;box-shadow:0 24px 60px -20px rgba(13,27,30,.6)}
+.modal h3{font-size:1.2rem;font-weight:700;margin-bottom:8px}
+.modal p{margin:0 0 18px;color:var(--muted);font-size:.9rem}
+.modal .who{font-family:"IBM Plex Mono",monospace;color:var(--ink);font-size:.85rem}
+.modal .err{margin-bottom:0}
+.modal-actions{display:flex;gap:10px;justify-content:flex-end;margin-top:20px;flex-wrap:wrap}
+
 footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);font-size:.8rem;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
 
 @media (max-width:900px){
@@ -161,18 +219,38 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   .stub-wrap{position:static}
   .hero{padding:38px 0 24px}
 }
+
+/* the log becomes stacked cards rather than scrolling sideways */
+@media (max-width:880px){
+  .table-scroll{background:none;border:0;box-shadow:none;overflow:visible}
+  table,tbody,tr,td{display:block;width:100%}
+  thead,colgroup{display:none}
+  tbody tr{background:var(--white);border:1px solid var(--line);border-left-width:3px;border-radius:var(--radius);margin-bottom:12px;padding:6px 4px;box-shadow:var(--shadow);position:relative}
+  tbody tr:hover{background:var(--white)}
+  td{border-bottom:0;padding:6px 14px;display:grid;grid-template-columns:96px 1fr;gap:10px;align-items:baseline}
+  td::before{content:attr(data-label);font-family:"IBM Plex Mono",monospace;font-size:9.5px;letter-spacing:.13em;text-transform:uppercase;color:var(--muted)}
+  td.spine{border-left:0}
+  td.act{position:absolute;top:6px;right:6px;padding:0;display:block}
+  td.act::before{content:none}
+  .issue-row{display:none}
+  tbody tr td.issue-inline{display:grid}
+}
+@media (min-width:881px){
+  td.issue-inline{display:none}
+}
 @media (max-width:560px){
   .wrap,.masthead-inner{padding-left:16px;padding-right:16px}
   .grid2{grid-template-columns:1fr}
   .seg{grid-template-columns:1fr 1fr}
   form,.card-head{padding-left:18px;padding-right:18px}
+  .feed{grid-template-columns:1fr}
 }
 @media (prefers-reduced-motion:reduce){
   *{animation:none !important;transition:none !important}
 }
 @media print{
   body{background:var(--white)}
-  .masthead,.hero,form,.card-head,.log,footer,.stub-note{display:none !important}
+  .masthead,.hero,form,.card-head,.log,footer,.stub-note,.overlay{display:none !important}
   .cols{display:block;padding:0}
   .stub{border:1px solid #000;box-shadow:none}
 }
@@ -196,7 +274,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   <section class="hero">
     <div class="eyebrow">Internal troubleshooting</div>
     <h1>Something broken? Write it down here.</h1>
-    <p>Log the problem, where it's happening, and who it went to. Every ticket lands in the log below and exports to a spreadsheet whenever you need it.</p>
+    <p>Log the problem, where it's happening, and who it went to. Every ticket lands in the shared log below, where the whole office can see it.</p>
     <div class="rule"></div>
   </section>
 
@@ -211,19 +289,19 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
         <div class="grid2">
           <div class="field" id="f-date">
             <label for="date">Date submitted</label>
-            <input type="date" id="date" name="date" required>
+            <input type="date" id="date" name="date">
             <div class="err">Pick the date this came up.</div>
           </div>
           <div class="field" id="f-person">
             <label for="person">Your name or email</label>
-            <input type="text" id="person" name="person" placeholder="Dana Whitcomb" autocomplete="name" required>
+            <input type="text" id="person" name="person" placeholder="Dana Whitcomb" autocomplete="name">
             <div class="err">Add a name or email so we know who to follow up with.</div>
           </div>
         </div>
 
         <div class="field" id="f-location">
           <label for="location">Where is it happening?</label>
-          <input type="text" id="location" name="location" placeholder="Operatory 3 — front chair" required>
+          <input type="text" id="location" name="location" placeholder="Operatory 3 — front chair">
           <div class="hint">Room, chair, desk, or piece of equipment — whatever gets someone to the right spot.</div>
           <div class="err">Say where the problem is.</div>
         </div>
@@ -272,7 +350,7 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
         </div>
 
         <div class="actions">
-          <button type="submit" class="btn btn-primary">Log this ticket</button>
+          <button type="submit" class="btn btn-primary" id="submitBtn">Log this ticket</button>
           <button type="reset" class="btn btn-ghost">Clear</button>
           <span class="saved" id="savedMsg" role="status" aria-live="polite"></span>
         </div>
@@ -308,12 +386,37 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     <div class="log-head">
       <div>
         <h2>Ticket log</h2>
-        <div class="sub" id="logSub">Saved on this computer. Export to keep a master copy.</div>
+        <div class="sub">Everything the office has filed, newest first.</div>
+        <div class="sync">
+          <span class="dot off" id="syncDot"></span>
+          <span id="syncText">Checking…</span>
+          <button class="link" id="connectLink" type="button" hidden>Set up the shared log</button>
+        </div>
       </div>
       <div class="log-tools">
+        <button class="btn btn-ghost btn-sm" id="refreshBtn" hidden>Refresh</button>
         <button class="btn btn-ghost btn-sm" id="exportBtn">Export to CSV</button>
         <button class="btn btn-ghost btn-sm" id="printBtn">Print stub</button>
       </div>
+    </div>
+
+    <!-- shared log setup -->
+    <div class="connect" id="connectPanel" hidden>
+      <h3>Connect the shared log</h3>
+      <p>Paste the web app URL from your Google Sheet's Apps Script deployment. Once connected, every computer that uses this page reads and writes the same log. Setup steps are in SETUP.md.</p>
+      <div class="row">
+        <input type="url" id="endpointInput" placeholder="https://script.google.com/macros/s/…/exec" spellcheck="false">
+        <button class="btn btn-primary btn-sm" id="saveEndpoint" type="button">Connect</button>
+        <button class="btn btn-ghost btn-sm" id="cancelEndpoint" type="button">Cancel</button>
+        <button class="btn btn-ghost btn-sm" id="disconnectBtn" type="button" hidden>Disconnect</button>
+      </div>
+      <div class="msg" id="connectMsg" role="status" aria-live="polite"></div>
+    </div>
+
+    <!-- recent activity -->
+    <div class="feed-wrap" id="feedWrap" hidden>
+      <div class="feed-title">Just came in</div>
+      <div class="feed" id="feed"></div>
     </div>
 
     <div id="emptyState" class="empty-state">
@@ -322,10 +425,14 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 
     <div class="table-scroll" id="tableWrap" hidden>
       <table>
+        <colgroup>
+          <col class="c-id"><col class="c-when"><col class="c-by"><col class="c-where">
+          <col class="c-cat"><col class="c-urg"><col class="c-routed"><col class="c-act">
+        </colgroup>
         <thead>
           <tr>
-            <th>Ticket</th><th>Date</th><th>Submitted by</th><th>Location</th>
-            <th>Category</th><th>Urgency</th><th>Routed to</th><th>Issue</th><th><span class="sr">Remove</span></th>
+            <th>Ticket</th><th>Filed</th><th>Submitted by</th><th>Location</th>
+            <th>Category</th><th>Urgency</th><th>Routed to</th><th><span class="sr">Remove</span></th>
           </tr>
         </thead>
         <tbody id="logBody"></tbody>
@@ -335,34 +442,90 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 
   <footer>
     <span>Dental Clinic New England · internal troubleshooting log</span>
-    <span class="mono" id="footNote">Tickets stay on this computer until exported</span>
+    <span class="mono" id="footNote">Equipment and IT only — no patient names</span>
   </footer>
+</div>
+
+<!-- delete dialog -->
+<div class="overlay" id="delOverlay" role="dialog" aria-modal="true" aria-labelledby="delTitle">
+  <div class="modal">
+    <h3 id="delTitle">Remove this ticket?</h3>
+    <p>You are about to remove <span class="who" id="delId">—</span> from the shared log. Everyone loses it, and it cannot be undone.</p>
+    <label for="delPin">Office PIN</label>
+    <input type="password" id="delPin" inputmode="numeric" autocomplete="off">
+    <div class="err" id="delErr">That PIN is not right.</div>
+    <div class="modal-actions">
+      <button class="btn btn-ghost btn-sm" id="delCancel" type="button">Keep it</button>
+      <button class="btn btn-danger btn-sm" id="delConfirm" type="button">Remove ticket</button>
+    </div>
+  </div>
 </div>
 
 <script>
 (function(){
   "use strict";
-  var KEY = "ned_tickets_v1";
+
+  /* =====================================================================
+     Settings. Set ENDPOINT here to bake the shared log into the file so
+     every computer is connected the moment it opens the page. Leave it
+     empty and staff can connect from the page instead.
+     ===================================================================== */
+  var ENDPOINT = "";
+  var LOCAL_PIN = "2468";   // only used when the shared log is not connected
+
+  var K_TICKETS = "ned_tickets_v1";
+  var K_QUEUE   = "ned_queue_v1";
+  var K_ENDPOINT= "ned_endpoint_v1";
+  var POLL_MS   = 60000;
+
   function $(id){ return document.getElementById(id); }
+  function store(){ try { return window.localStorage; } catch(e){ return null; } }
+  function get(k){ var s = store(); if (!s) return null; try { return s.getItem(k); } catch(e){ return null; } }
+  function set(k,v){ var s = store(); if (!s) return false; try { s.setItem(k,v); return true; } catch(e){ return false; } }
 
-  var tickets = load();
+  var state = {
+    tickets: readJSON(K_TICKETS, []),   // known tickets (server copy when connected)
+    queue:   readJSON(K_QUEUE, []),     // filed but not yet accepted by the server
+    endpoint: (get(K_ENDPOINT) || ENDPOINT || "").trim(),
+    syncing: false,
+    lastSync: null,
+    lastError: ""
+  };
 
-  function load(){
+  function readJSON(key, fallback){
     try {
-      var raw = localStorage.getItem(KEY);
-      var arr = raw ? JSON.parse(raw) : [];
-      return Array.isArray(arr) ? arr : [];
-    } catch(e){ return []; }
+      var raw = get(key);
+      var v = raw ? JSON.parse(raw) : fallback;
+      return Array.isArray(v) ? v : fallback;
+    } catch(e){ return fallback; }
   }
-  function save(){
-    try { localStorage.setItem(KEY, JSON.stringify(tickets)); }
-    catch(e){ $("footNote").textContent = "Could not save — export to CSV before closing"; }
+  function persist(){
+    set(K_TICKETS, JSON.stringify(state.tickets));
+    set(K_QUEUE, JSON.stringify(state.queue));
   }
+  function connected(){ return state.endpoint.length > 0; }
 
+  var URG = { Low:"low", Medium:"med", High:"high", Critical:"crit" };
+  function urgClass(u){ return URG[u] || "med"; }
   function pad(n){ return (n < 10 ? "0" : "") + n; }
 
-  /* ticket ids: NE-YYMMDD-NNN */
-  function stamp(dateStr){
+  /* ------------------------------------------------------------ talking
+     Apps Script rejects preflighted requests, so everything goes out as a
+     plain-text POST, which the browser treats as a simple request.        */
+  function callApi(payload){
+    return fetch(state.endpoint, {
+      method: "POST",
+      headers: { "Content-Type": "text/plain;charset=utf-8" },
+      body: JSON.stringify(payload),
+      redirect: "follow"
+    }).then(function(r){
+      if (!r.ok) throw new Error("Server said " + r.status);
+      return r.json();
+    });
+  }
+
+  /* ---------------------------------------------------------------- ids */
+  function stampFor(dateStr){
     var d = dateStr ? dateStr.split("-") : null;
     if (!d || d.length !== 3) {
       var n = new Date();
@@ -371,35 +534,60 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     return d[0].slice(2) + d[1] + d[2];
   }
   function nextId(dateStr){
-    var s = stamp(dateStr), max = 0;
-    tickets.forEach(function(t){
-      if (t.id && t.id.indexOf("NE-" + s + "-") === 0){
-        var n = parseInt(t.id.slice(-3), 10);
+    var prefix = "NE-" + stampFor(dateStr) + "-", max = 0;
+    state.tickets.concat(state.queue).forEach(function(t){
+      if (t.id && t.id.indexOf(prefix) === 0){
+        var n = parseInt(t.id.slice(prefix.length), 10);
         if (n > max) max = n;
       }
     });
-    return "NE-" + s + "-" + ("00" + (max+1)).slice(-3);
+    var seq = String(max + 1);
+    while (seq.length < 3) seq = "0" + seq;
+    return prefix + seq;
   }
 
-  var URG = { Low:"low", Medium:"med", High:"high", Critical:"crit" };
-  function urgency(){
-    var el = document.querySelector('input[name=urgency]:checked');
-    return el ? el.value : "Medium";
+  /* ---------------------------------------------------------------- time */
+  var MONTHS = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+  function prettyDate(v){
+    if (!v) return "";
+    var p = String(v).split("-");
+    if (p.length !== 3) return v;
+    var mi = parseInt(p[1],10) - 1;
+    if (!MONTHS[mi]) return v;
+    return MONTHS[mi] + " " + parseInt(p[2],10) + ", " + p[0];
+  }
+  function shortDate(v){
+    if (!v) return "—";
+    var p = String(v).split("-");
+    if (p.length !== 3) return v;
+    var mi = parseInt(p[1],10) - 1;
+    if (!MONTHS[mi]) return v;
+    return MONTHS[mi] + " " + parseInt(p[2],10);
+  }
+  function ago(iso){
+    if (!iso) return "";
+    var then = new Date(iso).getTime();
+    if (isNaN(then)) return "";
+    var mins = Math.floor((Date.now() - then) / 60000);
+    if (mins < 1) return "just now";
+    if (mins < 60) return mins + (mins === 1 ? " min ago" : " mins ago");
+    var hrs = Math.floor(mins / 60);
+    if (hrs < 24) return hrs + (hrs === 1 ? " hour ago" : " hours ago");
+    var days = Math.floor(hrs / 24);
+    if (days === 1) return "yesterday";
+    if (days < 30) return days + " days ago";
+    var months = Math.floor(days / 30);
+    return months + (months === 1 ? " month ago" : " months ago");
   }
 
-  /* ---------- live stub ---------- */
+  /* ---------------------------------------------------------- live stub */
   function setCell(el, value, fallback){
     if (value){ el.textContent = value; el.classList.remove("empty"); }
     else { el.textContent = fallback; el.classList.add("empty"); }
   }
-  function prettyDate(v){
-    if (!v) return "";
-    var p = v.split("-");
-    if (p.length !== 3) return v;
-    var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
-    var mi = parseInt(p[1],10) - 1;
-    if (!months[mi]) return v;
-    return months[mi] + " " + parseInt(p[2],10) + ", " + p[0];
+  function urgency(){
+    var el = document.querySelector('input[name=urgency]:checked');
+    return el ? el.value : "Medium";
   }
   function refreshStub(){
     var date = $("date").value;
@@ -411,94 +599,262 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     setCell($("stubRouted"), $("routed").value.trim(), "unassigned");
     var u = urgency();
     $("stubUrgency").textContent = u;
-    $("stubUrgency").className = "badge b-" + URG[u];
+    $("stubUrgency").className = "badge b-" + urgClass(u);
     var issue = $("issue").value.trim();
     $("stubIssue").textContent = issue || "The problem you describe will show up here.";
     if (issue) { $("stubIssue").classList.remove("empty"); }
     else { $("stubIssue").classList.add("empty"); }
   }
 
-  /* ---------- log ---------- */
-  function td(text, cls){
+  /* -------------------------------------------------------------- render */
+  function allTickets(){
+    var out = state.tickets.slice();
+    state.queue.forEach(function(q){
+      var dup = false;
+      for (var i = 0; i < out.length; i++) if (out[i].id === q.id) dup = true;
+      if (!dup) out.push(q);
+    });
+    return out;
+  }
+  function byNewest(list){
+    return list.slice().sort(function(a,b){
+      var al = a.logged ? new Date(a.logged).getTime() : 0;
+      var bl = b.logged ? new Date(b.logged).getTime() : 0;
+      if (al && bl && al !== bl) return bl - al;
+      if (a.date !== b.date) return a.date < b.date ? 1 : -1;
+      return a.id < b.id ? 1 : -1;
+    });
+  }
+
+  function td(text, cls, label){
     var c = document.createElement("td");
     if (cls) c.className = cls;
+    if (label) c.setAttribute("data-label", label);
     c.textContent = text ? text : "—";
     return c;
   }
-  function makeDelete(id){
-    var act = document.createElement("td");
-    var del = document.createElement("button");
-    del.className = "del";
-    del.type = "button";
-    del.innerHTML = "&times;";
-    del.title = "Remove ticket " + id;
-    del.setAttribute("aria-label", "Remove ticket " + id);
-    del.addEventListener("click", function(){
-      if (!confirm("Remove ticket " + id + " from the log? This cannot be undone.")) return;
-      tickets = tickets.filter(function(x){ return x.id !== id; });
-      save();
-      render();
-    });
-    act.appendChild(del);
-    return act;
+
+  function deleteCell(t){
+    var cell = document.createElement("td");
+    cell.className = "act";
+    var b = document.createElement("button");
+    b.className = "del";
+    b.type = "button";
+    b.innerHTML = "&times;";
+    b.title = "Remove ticket " + t.id;
+    b.setAttribute("aria-label", "Remove ticket " + t.id);
+    b.addEventListener("click", function(){ askDelete(t); });
+    cell.appendChild(b);
+    return cell;
   }
+
+  function renderFeed(sorted){
+    var feed = $("feed");
+    feed.textContent = "";
+    var recent = sorted.slice(0, 5);
+    $("feedWrap").hidden = recent.length === 0;
+    recent.forEach(function(t){
+      var card = document.createElement("div");
+      card.className = "fcard s-" + urgClass(t.urgency);
+
+      var top = document.createElement("div");
+      top.className = "top";
+      var fid = document.createElement("span");
+      fid.className = "fid";
+      fid.textContent = t.id;
+      var when = document.createElement("span");
+      when.className = "ago";
+      when.textContent = t.pending ? "not sent yet" : (ago(t.logged) || shortDate(t.date));
+      top.appendChild(fid);
+      top.appendChild(when);
+
+      var where = document.createElement("div");
+      where.className = "where";
+      where.textContent = t.location || "—";
+
+      var by = document.createElement("div");
+      by.className = "by";
+      by.textContent = t.person || "—";
+
+      var foot = document.createElement("div");
+      foot.className = "foot";
+      var badge = document.createElement("span");
+      badge.className = "badge b-" + urgClass(t.urgency);
+      badge.textContent = t.urgency;
+      var cat = document.createElement("span");
+      cat.className = "cat";
+      cat.textContent = t.category || "";
+      foot.appendChild(badge);
+      foot.appendChild(cat);
+
+      card.appendChild(top);
+      card.appendChild(where);
+      card.appendChild(by);
+      card.appendChild(foot);
+      feed.appendChild(card);
+    });
+  }
+
   function render(newId){
+    var sorted = byNewest(allTickets());
+    renderFeed(sorted);
+
     var body = $("logBody");
     body.textContent = "";
-    var sorted = tickets.slice().sort(function(a,b){
-      if (a.date === b.date) return a.id < b.id ? 1 : -1;
-      return a.date < b.date ? 1 : -1;
-    });
+
     sorted.forEach(function(t){
+      var cls = urgClass(t.urgency);
       var tr = document.createElement("tr");
-      if (t.id === newId) tr.className = "row-new";
-      tr.appendChild(td(t.id, "id spine s-" + (URG[t.urgency] || "med")));
-      tr.appendChild(td(t.date, "date"));
-      tr.appendChild(td(t.person, "who"));
-      tr.appendChild(td(t.location));
-      tr.appendChild(td(t.category));
+      tr.className = (t.id === newId ? "row-new " : "") + "spine s-" + cls;
+
+      var idCell = td(t.id, "id spine s-" + cls, "Ticket");
+      if (t.pending){
+        var flag = document.createElement("span");
+        flag.className = "pending";
+        flag.textContent = "waiting to sync";
+        idCell.appendChild(flag);
+      }
+      tr.appendChild(idCell);
+
+      var when = document.createElement("td");
+      when.className = "when";
+      when.setAttribute("data-label", "Filed");
+      var strong = document.createElement("b");
+      strong.textContent = shortDate(t.date);
+      when.appendChild(strong);
+      when.appendChild(document.createTextNode(ago(t.logged)));
+      tr.appendChild(when);
+
+      tr.appendChild(td(t.person, "", "Submitted by"));
+      tr.appendChild(td(t.location, "", "Location"));
+      tr.appendChild(td(t.category, "", "Category"));
 
       var u = document.createElement("td");
-      var b = document.createElement("span");
-      b.className = "badge b-" + (URG[t.urgency] || "med");
-      b.textContent = t.urgency;
-      u.appendChild(b);
+      u.setAttribute("data-label", "Urgency");
+      var badge = document.createElement("span");
+      badge.className = "badge b-" + cls;
+      badge.textContent = t.urgency;
+      u.appendChild(badge);
       tr.appendChild(u);
 
-      tr.appendChild(td(t.routed, "who"));
-      tr.appendChild(td(t.issue, "issue"));
-      tr.appendChild(makeDelete(t.id));
+      tr.appendChild(td(t.routed, "", "Routed to"));
+      tr.appendChild(td(t.issue, "issue-inline", "Issue"));
+      tr.appendChild(deleteCell(t));
       body.appendChild(tr);
+
+      // full description on its own line, wide screens only
+      var ir = document.createElement("tr");
+      ir.className = "issue-row";
+      var ic = document.createElement("td");
+      ic.colSpan = 8;
+      var text = document.createElement("div");
+      text.className = "issue-text";
+      text.textContent = t.issue || "—";
+      ic.appendChild(text);
+      ir.appendChild(ic);
+      body.appendChild(ir);
     });
 
-    var has = tickets.length > 0;
+    var has = sorted.length > 0;
     $("tableWrap").hidden = !has;
     $("emptyState").style.display = has ? "none" : "block";
-    $("statCount").textContent = tickets.length;
-    $("statOpen").textContent = tickets.filter(function(t){
+    $("statCount").textContent = sorted.length;
+    $("statOpen").textContent = sorted.filter(function(t){
       return t.urgency === "High" || t.urgency === "Critical";
     }).length;
   }
 
-  /* ---------- submit ---------- */
+  /* ---------------------------------------------------------- sync state */
+  function paintSync(){
+    var dot = $("syncDot"), text = $("syncText"), link = $("connectLink");
+    $("refreshBtn").hidden = !connected();
+
+    if (!connected()){
+      dot.className = "dot off";
+      text.textContent = "Local to this computer";
+      link.hidden = false;
+      link.textContent = "Set up the shared log";
+      return;
+    }
+    link.hidden = false;
+    link.textContent = "Settings";
+
+    if (state.syncing){
+      dot.className = "dot warn";
+      text.textContent = "Syncing…";
+      return;
+    }
+    if (state.lastError){
+      dot.className = "dot warn";
+      var waiting = state.queue.length;
+      text.textContent = waiting
+        ? "Offline — " + waiting + (waiting === 1 ? " ticket waiting" : " tickets waiting")
+        : "Cannot reach the shared log";
+      return;
+    }
+    dot.className = "dot on";
+    text.textContent = "Shared log · updated " + (ago(state.lastSync) || "just now");
+  }
+
+  function sync(){
+    if (!connected() || state.syncing) return Promise.resolve();
+    state.syncing = true;
+    paintSync();
+
+    var queue = state.queue.slice();
+    var chain = Promise.resolve();
+
+    queue.forEach(function(q){
+      chain = chain.then(function(){
+        return callApi({ action:"add", ticket:q }).then(function(res){
+          if (res && res.ok){
+            state.queue = state.queue.filter(function(x){ return x.localId !== q.localId; });
+          }
+        });
+      });
+    });
+
+    return chain
+      .then(function(){ return callApi({ action:"list" }); })
+      .then(function(res){
+        if (!res || !res.ok) throw new Error(res && res.error ? res.error : "The log did not answer.");
+        state.tickets = res.tickets || [];
+        state.lastSync = new Date().toISOString();
+        state.lastError = "";
+      })
+      .catch(function(err){
+        state.lastError = err && err.message ? err.message : "Could not reach the shared log.";
+      })
+      .then(function(){
+        state.syncing = false;
+        persist();
+        render();
+        paintSync();
+      });
+  }
+
+  /* -------------------------------------------------------------- submit */
   function checkField(wrapId, inputId){
     var wrap = $(wrapId), ok = $(inputId).value.trim() !== "";
     if (ok) { wrap.classList.remove("invalid"); } else { wrap.classList.add("invalid"); }
     return ok;
   }
+
   $("ticketForm").addEventListener("submit", function(e){
     e.preventDefault();
     var ok = true;
-    var pairs = [["f-date","date"],["f-person","person"],["f-location","location"],["f-issue","issue"]];
-    pairs.forEach(function(p){ if (!checkField(p[0], p[1])) ok = false; });
+    [["f-date","date"],["f-person","person"],["f-location","location"],["f-issue","issue"]]
+      .forEach(function(p){ if (!checkField(p[0], p[1])) ok = false; });
     if (!ok){
       var bad = document.querySelector(".field.invalid input, .field.invalid textarea");
       if (bad) bad.focus();
       return;
     }
+
     var date = $("date").value;
     var t = {
       id: nextId(date),
+      localId: "L" + Date.now() + "-" + Math.floor(Math.random()*1000),
       date: date,
       person: $("person").value.trim(),
       location: $("location").value.trim(),
@@ -508,16 +864,35 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
       issue: $("issue").value.trim(),
       logged: new Date().toISOString()
     };
-    tickets.push(t);
-    save();
-    render(t.id);
-
-    var msg = $("savedMsg");
-    msg.textContent = t.id + " added to the log";
-    msg.classList.add("show");
-    setTimeout(function(){ msg.classList.remove("show"); }, 4000);
 
     var person = t.person;
+    var msg = $("savedMsg");
+
+    if (connected()){
+      t.pending = true;
+      state.queue.push(t);
+      persist();
+      render(t.id);
+      paintSync();
+      msg.textContent = "Sending to the shared log…";
+      msg.classList.add("show");
+      sync().then(function(){
+        if (state.lastError){
+          msg.textContent = "Saved here — will send when the connection is back";
+        } else {
+          msg.textContent = "Added to the shared log";
+        }
+        setTimeout(function(){ msg.classList.remove("show"); }, 5000);
+      });
+    } else {
+      state.tickets.push(t);
+      persist();
+      render(t.id);
+      msg.textContent = t.id + " added to the log";
+      msg.classList.add("show");
+      setTimeout(function(){ msg.classList.remove("show"); }, 4000);
+    }
+
     $("ticketForm").reset();
     setToday();
     $("person").value = person;
@@ -531,22 +906,161 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
     setTimeout(function(){ setToday(); refreshStub(); }, 0);
   });
 
-  /* ---------- CSV ---------- */
+  /* -------------------------------------------------------------- delete */
+  var pendingDelete = null;
+
+  function askDelete(t){
+    pendingDelete = t;
+    $("delId").textContent = t.id;
+    $("delPin").value = "";
+    $("delErr").style.display = "none";
+    $("delOverlay").classList.add("show");
+    setTimeout(function(){ $("delPin").focus(); }, 40);
+  }
+  function closeDelete(){
+    $("delOverlay").classList.remove("show");
+    pendingDelete = null;
+  }
+  function failPin(text){
+    $("delErr").textContent = text;
+    $("delErr").style.display = "block";
+    $("delPin").focus();
+  }
+
+  $("delCancel").addEventListener("click", closeDelete);
+  $("delOverlay").addEventListener("click", function(e){
+    if (e.target === $("delOverlay")) closeDelete();
+  });
+  document.addEventListener("keydown", function(e){
+    if (e.key === "Escape" && $("delOverlay").classList.contains("show")) closeDelete();
+  });
+  $("delPin").addEventListener("keydown", function(e){
+    if (e.key === "Enter") { e.preventDefault(); $("delConfirm").click(); }
+  });
+
+  $("delConfirm").addEventListener("click", function(){
+    if (!pendingDelete) return;
+    var pin = $("delPin").value.trim();
+    if (!pin){ failPin("Enter the office PIN."); return; }
+    var t = pendingDelete;
+
+    // a queued ticket never reached the server, so it is ours to drop
+    if (t.pending){
+      if (!connected() && pin !== LOCAL_PIN){ failPin("That PIN is not right."); return; }
+      state.queue = state.queue.filter(function(x){ return x.localId !== t.localId; });
+      persist(); render(); closeDelete();
+      return;
+    }
+
+    if (!connected()){
+      if (pin !== LOCAL_PIN){ failPin("That PIN is not right."); return; }
+      state.tickets = state.tickets.filter(function(x){ return x.id !== t.id; });
+      persist(); render(); closeDelete();
+      return;
+    }
+
+    var btn = $("delConfirm");
+    btn.disabled = true;
+    btn.textContent = "Removing…";
+    callApi({ action:"delete", id:t.id, pin:pin })
+      .then(function(res){
+        if (!res || !res.ok) throw new Error(res && res.error ? res.error : "Could not remove it.");
+        state.tickets = state.tickets.filter(function(x){ return x.id !== t.id; });
+        persist(); render(); closeDelete();
+      })
+      .catch(function(err){
+        failPin(err && err.message ? err.message : "Could not remove it.");
+      })
+      .then(function(){
+        btn.disabled = false;
+        btn.textContent = "Remove ticket";
+      });
+  });
+
+  /* ------------------------------------------------------ shared log setup */
+  function showConnect(){
+    $("connectPanel").hidden = false;
+    $("endpointInput").value = state.endpoint;
+    $("disconnectBtn").hidden = !connected();
+    $("connectMsg").className = "msg";
+    $("endpointInput").focus();
+  }
+  function hideConnect(){
+    $("connectPanel").hidden = true;
+    $("connectMsg").className = "msg";
+  }
+  function connectMsg(text, good){
+    var m = $("connectMsg");
+    m.textContent = text;
+    m.className = "msg show " + (good ? "good" : "bad");
+  }
+
+  $("connectLink").addEventListener("click", function(){
+    if ($("connectPanel").hidden) showConnect(); else hideConnect();
+  });
+  $("cancelEndpoint").addEventListener("click", hideConnect);
+
+  $("saveEndpoint").addEventListener("click", function(){
+    var url = $("endpointInput").value.trim();
+    if (!/^https:\/\/script\.google\.com\/macros\/s\/[^\/]+\/exec$/.test(url)){
+      connectMsg("That does not look like a deployment URL. It ends in /exec.", false);
+      return;
+    }
+    var btn = $("saveEndpoint");
+    btn.disabled = true;
+    btn.textContent = "Connecting…";
+    var previous = state.endpoint;
+    state.endpoint = url;
+    callApi({ action:"list" })
+      .then(function(res){
+        if (!res || !res.ok) throw new Error("The script answered, but not with a ticket list.");
+        set(K_ENDPOINT, url);
+        state.tickets = res.tickets || [];
+        state.lastSync = new Date().toISOString();
+        state.lastError = "";
+        persist(); render(); paintSync();
+        connectMsg("Connected. This computer now reads and writes the shared log.", true);
+        setTimeout(hideConnect, 2200);
+      })
+      .catch(function(err){
+        state.endpoint = previous;
+        connectMsg((err && err.message ? err.message : "Could not reach it.") +
+                   " Check that the deployment is set to “Anyone”.", false);
+        paintSync();
+      })
+      .then(function(){
+        btn.disabled = false;
+        btn.textContent = "Connect";
+      });
+  });
+
+  $("disconnectBtn").addEventListener("click", function(){
+    var s = store();
+    if (s) { try { s.removeItem(K_ENDPOINT); } catch(e){} }
+    state.endpoint = "";
+    state.lastError = "";
+    paintSync(); hideConnect(); render();
+  });
+
+  $("refreshBtn").addEventListener("click", function(){ sync(); });
+
+  /* ----------------------------------------------------------------- CSV */
   function esc(v){
     var s = (v === null || v === undefined) ? "" : String(v);
     return '"' + s.replace(/"/g, '""') + '"';
   }
   $("exportBtn").addEventListener("click", function(){
-    if (!tickets.length){ alert("There are no tickets to export yet."); return; }
+    var list = allTickets();
+    if (!list.length){ alert("There are no tickets to export yet."); return; }
     var cols = ["Ticket","Date submitted","Submitted by","Location","Category","Urgency","Routed to","Issue"];
-    var rows = tickets.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; })
+    var rows = list.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; })
       .map(function(t){
         return [t.id,t.date,t.person,t.location,t.category,t.urgency,t.routed,t.issue].map(esc).join(",");
       });
     var csv = "﻿" + cols.map(esc).join(",") + "\r\n" + rows.join("\r\n");
     var blob = new Blob([csv], { type:"text/csv;charset=utf-8;" });
     var d = new Date();
-    var name = "ned-troubleshoot-log-" + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + ".csv";
+    var name = "dcne-troubleshoot-log-" + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + ".csv";
     var url = URL.createObjectURL(blob);
     var a = document.createElement("a");
     a.href = url;
@@ -559,11 +1073,12 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
 
   $("printBtn").addEventListener("click", function(){ window.print(); });
 
-  /* ---------- wire up ---------- */
+  /* ------------------------------------------------------------- wire up */
   function setToday(){
     var n = new Date();
     $("date").value = n.getFullYear() + "-" + pad(n.getMonth()+1) + "-" + pad(n.getDate());
   }
+
   ["date","person","location","category","routed","issue"].forEach(function(id){
     $(id).addEventListener("input", refreshStub);
     $(id).addEventListener("change", refreshStub);
@@ -571,12 +1086,12 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   var radios = document.querySelectorAll('input[name=urgency]');
   for (var i = 0; i < radios.length; i++) radios[i].addEventListener("change", refreshStub);
 
-  var inputs = document.querySelectorAll("input,textarea");
+  var inputs = document.querySelectorAll("#ticketForm input, #ticketForm textarea");
   for (var j = 0; j < inputs.length; j++){
     (function(el){
       el.addEventListener("input", function(){
         var f = el.parentNode;
-        while (f && f.className.indexOf("field") === -1) f = f.parentNode;
+        while (f && String(f.className).indexOf("field") === -1) f = f.parentNode;
         if (f && el.value.trim() !== "") f.classList.remove("invalid");
       });
     })(inputs[j]);
@@ -585,6 +1100,19 @@ footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);f
   setToday();
   refreshStub();
   render();
+  paintSync();
+
+  if (connected()) sync();
+
+  // keep "3 mins ago" honest, and pick up other people's tickets
+  setInterval(function(){ render(); paintSync(); }, 30000);
+  setInterval(function(){
+    if (connected() && !document.hidden) sync();
+  }, POLL_MS);
+  document.addEventListener("visibilitychange", function(){
+    if (!document.hidden && connected()) sync();
+  });
+  window.addEventListener("online", function(){ if (connected()) sync(); });
 })();
 </script>
 </body>
