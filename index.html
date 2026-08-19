@@ -1,0 +1,591 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Dental Clinic New England — Troubleshoot Log</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,500;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=Public+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  --ink:#0D1B1E;
+  --porcelain:#EFF2F1;
+  --white:#FFFFFF;
+  --scrub:#0B6B62;
+  --scrub-dk:#06463F;
+  --scrub-wash:#E4EFED;
+  --amber:#C4661A;
+  --red:#AE3327;
+  --muted:#66787D;
+  --line:#D6DDDB;
+  --radius:3px;
+  --shadow:0 1px 0 rgba(13,27,30,.04), 0 8px 24px -18px rgba(13,27,30,.5);
+}
+*{box-sizing:border-box}
+html,body{margin:0;padding:0}
+body{
+  background:var(--porcelain);
+  color:var(--ink);
+  font-family:"Public Sans",-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+  font-size:16px;
+  line-height:1.5;
+  -webkit-font-smoothing:antialiased;
+}
+.mono{font-family:"IBM Plex Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace}
+h1,h2,h3{font-family:"Bricolage Grotesque","Public Sans",Helvetica,Arial,sans-serif;margin:0;line-height:1.05;letter-spacing:-.02em}
+.wrap{max-width:1180px;margin:0 auto;padding:0 24px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* ---------- masthead ---------- */
+.masthead{background:var(--ink);color:#E8EDEB}
+.masthead-inner{display:flex;align-items:center;justify-content:space-between;gap:16px;padding:14px 24px;max-width:1180px;margin:0 auto}
+.mark{display:flex;align-items:center;gap:11px;font-family:"Bricolage Grotesque",Helvetica,Arial,sans-serif;font-weight:700;font-size:17px;letter-spacing:-.015em}
+.mark svg{display:block;flex:none}
+.masthead .stat{font-size:11.5px;letter-spacing:.14em;text-transform:uppercase;color:#8CA3A0;text-align:right}
+.masthead .stat b{color:#E8EDEB;font-weight:600}
+
+/* ---------- hero ---------- */
+.hero{padding:52px 0 30px}
+.eyebrow{font-family:"IBM Plex Mono",monospace;font-size:11.5px;letter-spacing:.22em;text-transform:uppercase;color:var(--scrub);margin-bottom:16px}
+.hero h1{font-size:clamp(2.3rem,5.6vw,4rem);font-weight:800;max-width:15ch}
+.hero p{margin:16px 0 0;max-width:52ch;color:var(--muted);font-size:1.05rem}
+.rule{height:1px;background:var(--line);margin:34px 0 0}
+
+/* ---------- layout ---------- */
+.cols{display:grid;grid-template-columns:minmax(0,1.35fr) minmax(0,.85fr);gap:34px;align-items:start;padding:34px 0 8px}
+.card{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+.card-head{padding:20px 26px 0}
+.card-head h2{font-size:1.3rem;font-weight:700}
+.card-head .sub{color:var(--muted);font-size:.88rem;margin-top:6px}
+form{padding:22px 26px 26px}
+
+/* ---------- fields ---------- */
+.field{margin-bottom:18px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+label{display:block;font-family:"IBM Plex Mono",monospace;font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:var(--ink);margin-bottom:7px;font-weight:500}
+label .opt{color:var(--muted);letter-spacing:.06em;text-transform:none;font-size:11px}
+input[type=text],input[type=date],select,textarea{
+  width:100%;padding:11px 12px;border:1px solid var(--line);border-radius:var(--radius);
+  background:#FBFCFC;color:var(--ink);font:inherit;font-size:.95rem;
+  transition:border-color .12s ease, box-shadow .12s ease, background .12s ease;
+}
+textarea{min-height:104px;resize:vertical;line-height:1.5}
+input:focus,select:focus,textarea:focus{outline:none;border-color:var(--scrub);background:var(--white);box-shadow:0 0 0 3px rgba(11,107,98,.14)}
+input:focus-visible,select:focus-visible,textarea:focus-visible,button:focus-visible{outline:2px solid var(--scrub);outline-offset:2px}
+select{appearance:none;background-image:url("data:image/svg+xml;charset=utf-8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8'%3E%3Cpath d='M1 1l5 5 5-5' fill='none' stroke='%2366787D' stroke-width='1.6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 12px center;padding-right:34px}
+.hint{font-size:.8rem;color:var(--muted);margin-top:6px}
+.err{color:var(--red);font-size:.8rem;margin-top:6px;display:none}
+.field.invalid input,.field.invalid textarea{border-color:var(--red);background:#FDF6F5}
+.field.invalid .err{display:block}
+
+/* urgency segmented control */
+.seg{display:grid;grid-template-columns:repeat(4,1fr);gap:6px}
+.seg input{position:absolute;opacity:0;pointer-events:none}
+.seg label{
+  margin:0;text-align:center;padding:10px 4px;border:1px solid var(--line);border-radius:var(--radius);
+  cursor:pointer;background:#FBFCFC;color:var(--muted);letter-spacing:.1em;font-size:10.5px;
+  transition:background .12s ease,color .12s ease,border-color .12s ease;
+}
+.seg label:hover{border-color:#B9C4C1}
+.seg input:focus-visible + label{outline:2px solid var(--scrub);outline-offset:2px}
+.seg input:checked + label{color:var(--white);border-color:transparent}
+.seg input#u-low:checked + label{background:var(--muted)}
+.seg input#u-med:checked + label{background:var(--scrub)}
+.seg input#u-high:checked + label{background:var(--amber)}
+.seg input#u-crit:checked + label{background:var(--red)}
+
+/* ---------- buttons ---------- */
+.btn{
+  font-family:"Public Sans",sans-serif;font-size:.95rem;font-weight:600;
+  padding:12px 22px;border-radius:var(--radius);border:1px solid transparent;cursor:pointer;
+  transition:background .14s ease,color .14s ease,border-color .14s ease;
+}
+.btn-primary{background:var(--scrub);color:var(--white)}
+.btn-primary:hover{background:var(--scrub-dk)}
+.btn-ghost{background:transparent;color:var(--muted);border-color:var(--line)}
+.btn-ghost:hover{color:var(--ink);border-color:#B9C4C1;background:var(--white)}
+.btn-sm{font-size:.82rem;padding:8px 14px}
+.actions{display:flex;gap:12px;align-items:center;margin-top:24px;flex-wrap:wrap}
+.saved{font-size:.85rem;color:var(--scrub);font-weight:600;opacity:0;transition:opacity .25s ease}
+.saved.show{opacity:1}
+
+/* ---------- the stub ---------- */
+.stub-wrap{position:sticky;top:24px}
+.stub{background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow);overflow:hidden}
+.stub-top{background:var(--ink);color:#E8EDEB;padding:14px 20px;display:flex;justify-content:space-between;align-items:baseline;gap:10px}
+.stub-top .id{font-family:"IBM Plex Mono",monospace;font-size:.95rem;font-weight:600;letter-spacing:.04em}
+.stub-top .who{font-family:"IBM Plex Mono",monospace;font-size:10.5px;letter-spacing:.16em;text-transform:uppercase;color:#8CA3A0}
+.perf{height:10px;background:radial-gradient(circle at 5px 0, transparent 4px, var(--white) 4.5px) 0 0/10px 10px repeat-x;border-bottom:1px dashed var(--line)}
+.stub-body{padding:18px 20px 20px}
+.stub-row{display:grid;grid-template-columns:78px 1fr;gap:12px;padding:9px 0;border-bottom:1px solid #EDF1F0;align-items:baseline}
+.stub-row:last-child{border-bottom:0}
+.stub-row dt{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted)}
+.stub-row dd{margin:0;font-size:.92rem;word-break:break-word}
+.stub-row dd.empty{color:#A9B6B3;font-style:italic}
+.stub-issue{margin-top:14px;padding-top:14px;border-top:1px dashed var(--line);font-size:.9rem;color:var(--ink);white-space:pre-wrap;word-break:break-word}
+.stub-issue.empty{color:#A9B6B3;font-style:italic}
+.badge{display:inline-block;font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.13em;text-transform:uppercase;padding:4px 9px;border-radius:2px;color:var(--white);font-weight:500;white-space:nowrap}
+.b-low{background:var(--muted)}.b-med{background:var(--scrub)}.b-high{background:var(--amber)}.b-crit{background:var(--red)}
+.stub-note{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.1em;color:var(--muted);text-align:center;padding:10px;text-transform:uppercase}
+
+/* ---------- log ---------- */
+.log{padding:44px 0 70px}
+.log-head{display:flex;align-items:flex-end;justify-content:space-between;gap:18px;flex-wrap:wrap;margin-bottom:18px}
+.log-head h2{font-size:1.6rem;font-weight:700}
+.log-head .sub{color:var(--muted);font-size:.88rem;margin-top:6px}
+.log-tools{display:flex;gap:10px;flex-wrap:wrap}
+.table-scroll{overflow-x:auto;background:var(--white);border:1px solid var(--line);border-radius:var(--radius);box-shadow:var(--shadow)}
+table{border-collapse:collapse;width:100%;min-width:940px}
+th{font-family:"IBM Plex Mono",monospace;font-size:10px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);text-align:left;font-weight:500;padding:13px 14px;border-bottom:1px solid var(--line);background:#F7F9F8;white-space:nowrap}
+td{padding:14px;border-bottom:1px solid #EDF1F0;font-size:.9rem;vertical-align:top}
+tbody tr:last-child td{border-bottom:0}
+tbody tr:hover{background:#FAFCFB}
+td.id{font-family:"IBM Plex Mono",monospace;font-size:.82rem;color:var(--scrub);font-weight:500;white-space:nowrap}
+td.date{font-family:"IBM Plex Mono",monospace;font-size:.82rem;white-space:nowrap}
+td.issue{max-width:300px;min-width:200px}
+td.who{min-width:130px;word-break:break-word}
+.spine{border-left:3px solid transparent}
+.s-low{border-left-color:var(--muted)}.s-med{border-left-color:var(--scrub)}.s-high{border-left-color:var(--amber)}.s-crit{border-left-color:var(--red)}
+.row-new{animation:flash 1.6s ease}
+@keyframes flash{from{background:var(--scrub-wash)}to{background:transparent}}
+.del{background:none;border:0;color:#A9B6B3;cursor:pointer;font-size:1.05rem;line-height:1;padding:4px 6px;border-radius:2px}
+.del:hover{color:var(--red);background:#FBEEEC}
+.empty-state{padding:56px 26px;text-align:center;background:var(--white);border:1px dashed var(--line);border-radius:var(--radius)}
+.empty-state p{margin:0;color:var(--muted)}
+.empty-state strong{display:block;font-family:"Bricolage Grotesque",sans-serif;font-size:1.15rem;color:var(--ink);margin-bottom:6px}
+footer{border-top:1px solid var(--line);padding:22px 0 40px;color:var(--muted);font-size:.8rem;display:flex;justify-content:space-between;gap:14px;flex-wrap:wrap}
+
+@media (max-width:900px){
+  .cols{grid-template-columns:1fr;gap:26px}
+  .stub-wrap{position:static}
+  .hero{padding:38px 0 24px}
+}
+@media (max-width:560px){
+  .wrap,.masthead-inner{padding-left:16px;padding-right:16px}
+  .grid2{grid-template-columns:1fr}
+  .seg{grid-template-columns:1fr 1fr}
+  form,.card-head{padding-left:18px;padding-right:18px}
+}
+@media (prefers-reduced-motion:reduce){
+  *{animation:none !important;transition:none !important}
+}
+@media print{
+  body{background:var(--white)}
+  .masthead,.hero,form,.card-head,.log,footer,.stub-note{display:none !important}
+  .cols{display:block;padding:0}
+  .stub{border:1px solid #000;box-shadow:none}
+}
+</style>
+</head>
+<body>
+
+<header class="masthead">
+  <div class="masthead-inner">
+    <div class="mark">
+      <svg width="22" height="24" viewBox="0 0 22 24" fill="none" aria-hidden="true">
+        <path d="M11 4.2C8.6 1.7 4.4 1.2 2.4 3.7.6 6 1.2 9.6 2.3 12.6c.9 2.4 1.3 4.6 1.7 7 .3 1.7 2.5 2 3.1.4l1.6-4.4c.5-1.3 2.1-1.3 2.6 0l1.6 4.4c.6 1.6 2.8 1.3 3.1-.4.4-2.4.8-4.6 1.7-7 1.1-3 1.7-6.6-.1-8.9C15.6 1.2 11.4 1.7 11 4.2Z" stroke="#E8EDEB" stroke-width="1.5" stroke-linejoin="round"/>
+      </svg>
+      Dental Clinic New England
+    </div>
+    <div class="stat"><b id="statCount">0</b> tickets logged &nbsp;·&nbsp; <b id="statOpen">0</b> high or critical</div>
+  </div>
+</header>
+
+<div class="wrap">
+  <section class="hero">
+    <div class="eyebrow">Internal troubleshooting</div>
+    <h1>Something broken? Write it down here.</h1>
+    <p>Log the problem, where it's happening, and who it went to. Every ticket lands in the log below and exports to a spreadsheet whenever you need it.</p>
+    <div class="rule"></div>
+  </section>
+
+  <section class="cols">
+    <!-- INTAKE -->
+    <div class="card">
+      <div class="card-head">
+        <h2>New ticket</h2>
+        <div class="sub">Takes about a minute. Fill in what you know.</div>
+      </div>
+      <form id="ticketForm" novalidate>
+        <div class="grid2">
+          <div class="field" id="f-date">
+            <label for="date">Date submitted</label>
+            <input type="date" id="date" name="date" required>
+            <div class="err">Pick the date this came up.</div>
+          </div>
+          <div class="field" id="f-person">
+            <label for="person">Your name or email</label>
+            <input type="text" id="person" name="person" placeholder="Dana Whitcomb" autocomplete="name" required>
+            <div class="err">Add a name or email so we know who to follow up with.</div>
+          </div>
+        </div>
+
+        <div class="field" id="f-location">
+          <label for="location">Where is it happening?</label>
+          <input type="text" id="location" name="location" placeholder="Operatory 3 — front chair" required>
+          <div class="hint">Room, chair, desk, or piece of equipment — whatever gets someone to the right spot.</div>
+          <div class="err">Say where the problem is.</div>
+        </div>
+
+        <div class="grid2">
+          <div class="field" id="f-category">
+            <label for="category">Category</label>
+            <select id="category" name="category">
+              <option value="Computer / Software">Computer / Software</option>
+              <option value="Dental Equipment">Dental Equipment</option>
+              <option value="Network / Wi-Fi">Network / Wi-Fi</option>
+              <option value="Phones">Phones</option>
+              <option value="Imaging / X-Ray">Imaging / X-Ray</option>
+              <option value="Practice Management Software">Practice Management Software</option>
+              <option value="Sterilization">Sterilization</option>
+              <option value="Building / Facilities">Building / Facilities</option>
+              <option value="Other">Other</option>
+            </select>
+          </div>
+          <div class="field" id="f-routed">
+            <label for="routed">Routed to <span class="opt">(optional)</span></label>
+            <input type="text" id="routed" name="routed" placeholder="it@nedental.com">
+            <div class="hint">Who the ticket was emailed or handed to.</div>
+          </div>
+        </div>
+
+        <div class="field">
+          <label for="u-low" id="urgencyLabel">Urgency</label>
+          <div class="seg" role="group" aria-labelledby="urgencyLabel">
+            <input type="radio" name="urgency" id="u-low" value="Low">
+            <label for="u-low" class="mono">Low</label>
+            <input type="radio" name="urgency" id="u-med" value="Medium" checked>
+            <label for="u-med" class="mono">Medium</label>
+            <input type="radio" name="urgency" id="u-high" value="High">
+            <label for="u-high" class="mono">High</label>
+            <input type="radio" name="urgency" id="u-crit" value="Critical">
+            <label for="u-crit" class="mono">Critical</label>
+          </div>
+          <div class="hint">Critical means a chair, the schedule, or patient care is stopped right now.</div>
+        </div>
+
+        <div class="field" id="f-issue">
+          <label for="issue">What's going wrong?</label>
+          <textarea id="issue" name="issue" placeholder="Sensor won't connect to the imaging software. Tried a different USB port and restarted twice."></textarea>
+          <div class="err">Describe the problem so it can be fixed without a phone call.</div>
+        </div>
+
+        <div class="actions">
+          <button type="submit" class="btn btn-primary">Log this ticket</button>
+          <button type="reset" class="btn btn-ghost">Clear</button>
+          <span class="saved" id="savedMsg" role="status" aria-live="polite"></span>
+        </div>
+      </form>
+    </div>
+
+    <!-- LIVE STUB -->
+    <div class="stub-wrap">
+      <div class="stub" id="stub">
+        <div class="stub-top">
+          <span class="id" id="stubId">NE-000000-001</span>
+          <span class="who">Ticket stub</span>
+        </div>
+        <div class="perf"></div>
+        <div class="stub-body">
+          <dl style="margin:0">
+            <div class="stub-row"><dt>Date</dt><dd id="stubDate" class="empty">—</dd></div>
+            <div class="stub-row"><dt>From</dt><dd id="stubPerson" class="empty">not filled in</dd></div>
+            <div class="stub-row"><dt>Location</dt><dd id="stubLocation" class="empty">not filled in</dd></div>
+            <div class="stub-row"><dt>Category</dt><dd id="stubCategory">Computer / Software</dd></div>
+            <div class="stub-row"><dt>Routed to</dt><dd id="stubRouted" class="empty">unassigned</dd></div>
+            <div class="stub-row"><dt>Urgency</dt><dd><span class="badge b-med" id="stubUrgency">Medium</span></dd></div>
+          </dl>
+          <div class="stub-issue empty" id="stubIssue">The problem you describe will show up here.</div>
+        </div>
+        <div class="stub-note">Print this page for a paper copy</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- LOG -->
+  <section class="log">
+    <div class="log-head">
+      <div>
+        <h2>Ticket log</h2>
+        <div class="sub" id="logSub">Saved on this computer. Export to keep a master copy.</div>
+      </div>
+      <div class="log-tools">
+        <button class="btn btn-ghost btn-sm" id="exportBtn">Export to CSV</button>
+        <button class="btn btn-ghost btn-sm" id="printBtn">Print stub</button>
+      </div>
+    </div>
+
+    <div id="emptyState" class="empty-state">
+      <p><strong>No tickets yet</strong>The first one you log will show up here.</p>
+    </div>
+
+    <div class="table-scroll" id="tableWrap" hidden>
+      <table>
+        <thead>
+          <tr>
+            <th>Ticket</th><th>Date</th><th>Submitted by</th><th>Location</th>
+            <th>Category</th><th>Urgency</th><th>Routed to</th><th>Issue</th><th><span class="sr">Remove</span></th>
+          </tr>
+        </thead>
+        <tbody id="logBody"></tbody>
+      </table>
+    </div>
+  </section>
+
+  <footer>
+    <span>Dental Clinic New England · internal troubleshooting log</span>
+    <span class="mono" id="footNote">Tickets stay on this computer until exported</span>
+  </footer>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var KEY = "ned_tickets_v1";
+  function $(id){ return document.getElementById(id); }
+
+  var tickets = load();
+
+  function load(){
+    try {
+      var raw = localStorage.getItem(KEY);
+      var arr = raw ? JSON.parse(raw) : [];
+      return Array.isArray(arr) ? arr : [];
+    } catch(e){ return []; }
+  }
+  function save(){
+    try { localStorage.setItem(KEY, JSON.stringify(tickets)); }
+    catch(e){ $("footNote").textContent = "Could not save — export to CSV before closing"; }
+  }
+
+  function pad(n){ return (n < 10 ? "0" : "") + n; }
+
+  /* ticket ids: NE-YYMMDD-NNN */
+  function stamp(dateStr){
+    var d = dateStr ? dateStr.split("-") : null;
+    if (!d || d.length !== 3) {
+      var n = new Date();
+      d = [String(n.getFullYear()), pad(n.getMonth()+1), pad(n.getDate())];
+    }
+    return d[0].slice(2) + d[1] + d[2];
+  }
+  function nextId(dateStr){
+    var s = stamp(dateStr), max = 0;
+    tickets.forEach(function(t){
+      if (t.id && t.id.indexOf("NE-" + s + "-") === 0){
+        var n = parseInt(t.id.slice(-3), 10);
+        if (n > max) max = n;
+      }
+    });
+    return "NE-" + s + "-" + ("00" + (max+1)).slice(-3);
+  }
+
+  var URG = { Low:"low", Medium:"med", High:"high", Critical:"crit" };
+  function urgency(){
+    var el = document.querySelector('input[name=urgency]:checked');
+    return el ? el.value : "Medium";
+  }
+
+  /* ---------- live stub ---------- */
+  function setCell(el, value, fallback){
+    if (value){ el.textContent = value; el.classList.remove("empty"); }
+    else { el.textContent = fallback; el.classList.add("empty"); }
+  }
+  function prettyDate(v){
+    if (!v) return "";
+    var p = v.split("-");
+    if (p.length !== 3) return v;
+    var months = ["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug","Sep","Oct","Nov","Dec"];
+    var mi = parseInt(p[1],10) - 1;
+    if (!months[mi]) return v;
+    return months[mi] + " " + parseInt(p[2],10) + ", " + p[0];
+  }
+  function refreshStub(){
+    var date = $("date").value;
+    $("stubId").textContent = nextId(date);
+    setCell($("stubDate"), prettyDate(date), "—");
+    setCell($("stubPerson"), $("person").value.trim(), "not filled in");
+    setCell($("stubLocation"), $("location").value.trim(), "not filled in");
+    $("stubCategory").textContent = $("category").value;
+    setCell($("stubRouted"), $("routed").value.trim(), "unassigned");
+    var u = urgency();
+    $("stubUrgency").textContent = u;
+    $("stubUrgency").className = "badge b-" + URG[u];
+    var issue = $("issue").value.trim();
+    $("stubIssue").textContent = issue || "The problem you describe will show up here.";
+    if (issue) { $("stubIssue").classList.remove("empty"); }
+    else { $("stubIssue").classList.add("empty"); }
+  }
+
+  /* ---------- log ---------- */
+  function td(text, cls){
+    var c = document.createElement("td");
+    if (cls) c.className = cls;
+    c.textContent = text ? text : "—";
+    return c;
+  }
+  function makeDelete(id){
+    var act = document.createElement("td");
+    var del = document.createElement("button");
+    del.className = "del";
+    del.type = "button";
+    del.innerHTML = "&times;";
+    del.title = "Remove ticket " + id;
+    del.setAttribute("aria-label", "Remove ticket " + id);
+    del.addEventListener("click", function(){
+      if (!confirm("Remove ticket " + id + " from the log? This cannot be undone.")) return;
+      tickets = tickets.filter(function(x){ return x.id !== id; });
+      save();
+      render();
+    });
+    act.appendChild(del);
+    return act;
+  }
+  function render(newId){
+    var body = $("logBody");
+    body.textContent = "";
+    var sorted = tickets.slice().sort(function(a,b){
+      if (a.date === b.date) return a.id < b.id ? 1 : -1;
+      return a.date < b.date ? 1 : -1;
+    });
+    sorted.forEach(function(t){
+      var tr = document.createElement("tr");
+      if (t.id === newId) tr.className = "row-new";
+      tr.appendChild(td(t.id, "id spine s-" + (URG[t.urgency] || "med")));
+      tr.appendChild(td(t.date, "date"));
+      tr.appendChild(td(t.person, "who"));
+      tr.appendChild(td(t.location));
+      tr.appendChild(td(t.category));
+
+      var u = document.createElement("td");
+      var b = document.createElement("span");
+      b.className = "badge b-" + (URG[t.urgency] || "med");
+      b.textContent = t.urgency;
+      u.appendChild(b);
+      tr.appendChild(u);
+
+      tr.appendChild(td(t.routed, "who"));
+      tr.appendChild(td(t.issue, "issue"));
+      tr.appendChild(makeDelete(t.id));
+      body.appendChild(tr);
+    });
+
+    var has = tickets.length > 0;
+    $("tableWrap").hidden = !has;
+    $("emptyState").style.display = has ? "none" : "block";
+    $("statCount").textContent = tickets.length;
+    $("statOpen").textContent = tickets.filter(function(t){
+      return t.urgency === "High" || t.urgency === "Critical";
+    }).length;
+  }
+
+  /* ---------- submit ---------- */
+  function checkField(wrapId, inputId){
+    var wrap = $(wrapId), ok = $(inputId).value.trim() !== "";
+    if (ok) { wrap.classList.remove("invalid"); } else { wrap.classList.add("invalid"); }
+    return ok;
+  }
+  $("ticketForm").addEventListener("submit", function(e){
+    e.preventDefault();
+    var ok = true;
+    var pairs = [["f-date","date"],["f-person","person"],["f-location","location"],["f-issue","issue"]];
+    pairs.forEach(function(p){ if (!checkField(p[0], p[1])) ok = false; });
+    if (!ok){
+      var bad = document.querySelector(".field.invalid input, .field.invalid textarea");
+      if (bad) bad.focus();
+      return;
+    }
+    var date = $("date").value;
+    var t = {
+      id: nextId(date),
+      date: date,
+      person: $("person").value.trim(),
+      location: $("location").value.trim(),
+      category: $("category").value,
+      urgency: urgency(),
+      routed: $("routed").value.trim(),
+      issue: $("issue").value.trim(),
+      logged: new Date().toISOString()
+    };
+    tickets.push(t);
+    save();
+    render(t.id);
+
+    var msg = $("savedMsg");
+    msg.textContent = t.id + " added to the log";
+    msg.classList.add("show");
+    setTimeout(function(){ msg.classList.remove("show"); }, 4000);
+
+    var person = t.person;
+    $("ticketForm").reset();
+    setToday();
+    $("person").value = person;
+    refreshStub();
+    $("location").focus();
+  });
+
+  $("ticketForm").addEventListener("reset", function(){
+    var bad = document.querySelectorAll(".field.invalid");
+    for (var i = 0; i < bad.length; i++) bad[i].classList.remove("invalid");
+    setTimeout(function(){ setToday(); refreshStub(); }, 0);
+  });
+
+  /* ---------- CSV ---------- */
+  function esc(v){
+    var s = (v === null || v === undefined) ? "" : String(v);
+    return '"' + s.replace(/"/g, '""') + '"';
+  }
+  $("exportBtn").addEventListener("click", function(){
+    if (!tickets.length){ alert("There are no tickets to export yet."); return; }
+    var cols = ["Ticket","Date submitted","Submitted by","Location","Category","Urgency","Routed to","Issue"];
+    var rows = tickets.slice().sort(function(a,b){ return a.date < b.date ? -1 : 1; })
+      .map(function(t){
+        return [t.id,t.date,t.person,t.location,t.category,t.urgency,t.routed,t.issue].map(esc).join(",");
+      });
+    var csv = "﻿" + cols.map(esc).join(",") + "\r\n" + rows.join("\r\n");
+    var blob = new Blob([csv], { type:"text/csv;charset=utf-8;" });
+    var d = new Date();
+    var name = "ned-troubleshoot-log-" + d.getFullYear() + pad(d.getMonth()+1) + pad(d.getDate()) + ".csv";
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement("a");
+    a.href = url;
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  });
+
+  $("printBtn").addEventListener("click", function(){ window.print(); });
+
+  /* ---------- wire up ---------- */
+  function setToday(){
+    var n = new Date();
+    $("date").value = n.getFullYear() + "-" + pad(n.getMonth()+1) + "-" + pad(n.getDate());
+  }
+  ["date","person","location","category","routed","issue"].forEach(function(id){
+    $(id).addEventListener("input", refreshStub);
+    $(id).addEventListener("change", refreshStub);
+  });
+  var radios = document.querySelectorAll('input[name=urgency]');
+  for (var i = 0; i < radios.length; i++) radios[i].addEventListener("change", refreshStub);
+
+  var inputs = document.querySelectorAll("input,textarea");
+  for (var j = 0; j < inputs.length; j++){
+    (function(el){
+      el.addEventListener("input", function(){
+        var f = el.parentNode;
+        while (f && f.className.indexOf("field") === -1) f = f.parentNode;
+        if (f && el.value.trim() !== "") f.classList.remove("invalid");
+      });
+    })(inputs[j]);
+  }
+
+  setToday();
+  refreshStub();
+  render();
+})();
+</script>
+</body>
+</html>
